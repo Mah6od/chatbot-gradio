@@ -1,3 +1,4 @@
 Qwen2.5-0.5B-Instruct/
 commands.txt
 .DS_Store
+__pycache__

@@ -53,4 +53,4 @@ def get_sidebar_choices():
     return[(v.get("title", sid), sid) for sid, v in sort_items]
 
 def get_messages(session_id: str) -> list:
-    ...
+    return load_all.get(str(session_id), {}).get("messages", [])

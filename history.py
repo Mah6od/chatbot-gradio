@@ -44,7 +44,13 @@ def delete_conversation(session_id: str):
     _write_all(all_history)
 
 def get_sidebar_choices():
-    ...
+    all_history = load_all()
+    sort_items = sorted(
+        all_history.items(),
+        key=lambda x: x[1].get("updated_at", ""),
+        reverse=True
+    )
+    return[(v.get("title", sid), sid) for sid, v in sort_items]
 
 def get_messages(session_id: str) -> list:
     ...

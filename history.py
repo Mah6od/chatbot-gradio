@@ -39,7 +39,9 @@ def save_conversation(session_id: str, history: list):
     _write_all(all_history)
 
 def delete_conversation(session_id: str):
-    ...
+    all_history = load_all()
+    all_history.pop(str(session_id), None)
+    _write_all(all_history)
 
 def get_sidebar_choices():
     ...

@@ -25,4 +25,29 @@ def load_model():
     return tokenizer, model, device
 
 def stream_response(tokenizer, model, device, message: list):
-    ...
+    text = tokenizer.apply_chat_template(
+        message, tokenizer=False, add_generation_prompt=True
+    )
+    inputs = tokenizer(text, return_tensor="pt").to(device)
+
+    streamer = TextIteratorStreamer(
+        tokenizer, skip_prompt=True, skip_special_tokens = True
+    )
+
+    thread = Thread(target=model.generate, kwargs=dict(
+        **inputs,
+        streamer=streamer,
+        max_new_tokens = MAX_NEW_TOKENS,
+        do_sample = True,
+        temperature = TEMPERATURE,
+        top_p=TOP_P,
+        pad_token_id = tokenizer.eos_token_id
+    ))
+    thread.start()
+
+    partial = ""
+    for token in streamer:
+        partial += token
+        yield partial
+
+    thread.join()

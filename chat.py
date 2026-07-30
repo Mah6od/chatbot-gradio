@@ -18,19 +18,25 @@ def handle_retry(respond_fn):
     ...
 
 def handle_like(data: gr.LikeData):
-    ...
+    print(f"[Like] {'👍' if data.liked else '👎'}")
 
 def handle_edit(edit_data: gr.EditData):
-    ...
+    print(f"[Edit] index={edit_data.index}, value={edit_data.value}")
 
 def handle_clear():
-    ...
+    new_uuid = str(uuid4())
+    print(f"[Clear] new session: {new_uuid}")
+    return new_uuid, gr.update(choices=get_sidebar_choices(), value=None)
+
+def handle_undo(history, undo_data: gr.UndoData):
+    print(f"[Undo] index={undo_data.index}")
+    return history[:undo_data.index], undo_data.value
+
+def refresh_sideber():
+    return gr.update(choices=get_sidebar_choices())
 
 def load_conversation(selected_sid: str):
     ...
 
 def delete_selected(selected_sid: str):
-    ...
-
-def refresh_sideber():
     ...

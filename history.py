@@ -11,6 +11,9 @@ def load_all() -> dict:
             pass
     return {}
 
+def _write_all(data: dict):
+    HISTORY_FILE.write_text(json.dumps(data, indent=2))
+
 def save_conversation(session_id: str, history: list):
     ...
 

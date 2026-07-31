@@ -39,4 +39,7 @@ def load_conversation(selected_sid: str):
     ...
 
 def delete_selected(selected_sid: str):
-    ...
+    if selected_sid:
+        delete_conversation(selected_sid)
+        print(f"[Delete] session={selected_sid}")
+    return [], str(uuid4()), gr.update(choices=get_sidebar_choices(), value=None)

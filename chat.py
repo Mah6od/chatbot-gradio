@@ -9,7 +9,20 @@ from history import (
 )
 
 def build_messages(history: list, user_text: str) -> list:
-    ...
+    messages = [{"role":"system", "content":"You are a helpful assistant"}]
+    for entry in history:
+        role = entry.get("role")
+        content = entry.get("content")
+        if role in ("user", "assistant"):
+            if isinstance(content, list):
+                content = " ".join(
+                    c.get("text", "") for c in content
+                    if isinstance(c, dict) and c.get("type") == "text"
+                )
+            if content:
+                messages.append({"role":role, "content": str(content)})
+    messages.append({"role":"user", "content": user_text})
+    return messages
 
 def respond(tokenizer, model, device):
     ...

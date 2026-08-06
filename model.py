@@ -3,7 +3,7 @@ from transformers import AutoTokenizer, AutoModelForCausalLM, TextIteratorStream
 from threading import Thread
 from config import MODEL_PATH, MAX_NEW_TOKENS, TEMPERATURE, TOP_P
 
-def get_device():
+def get_device() -> str:
     if torch.cuda.is_available():
         return "cuda"
     if torch.backends.mps.is_available():
@@ -24,24 +24,29 @@ def load_model():
     print("Model ready!")
     return tokenizer, model, device
 
-def stream_response(tokenizer, model, device, message: list):
+
+def stream_response(tokenizer, model, device, messages: list):
+    """
+    Generator that streams decoded tokens one by one.
+    `messages` is a fully-built OpenAI-style list (system + history + user).
+    """
     text = tokenizer.apply_chat_template(
-        message, tokenizer=False, add_generation_prompt=True
+        messages, tokenize=False, add_generation_prompt=True
     )
-    inputs = tokenizer(text, return_tensor="pt").to(device)
+    inputs = tokenizer(text, return_tensors="pt").to(device)
 
     streamer = TextIteratorStreamer(
-        tokenizer, skip_prompt=True, skip_special_tokens = True
+        tokenizer, skip_prompt=True, skip_special_tokens=True
     )
 
     thread = Thread(target=model.generate, kwargs=dict(
         **inputs,
         streamer=streamer,
-        max_new_tokens = MAX_NEW_TOKENS,
-        do_sample = True,
-        temperature = TEMPERATURE,
+        max_new_tokens=MAX_NEW_TOKENS,
+        do_sample=True,
+        temperature=TEMPERATURE,
         top_p=TOP_P,
-        pad_token_id = tokenizer.eos_token_id
+        pad_token_id=tokenizer.eos_token_id,
     ))
     thread.start()
 

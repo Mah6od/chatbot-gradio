@@ -8,35 +8,48 @@ from chat import (
     load_conversation, delete_selected, refresh_sidebar,
 )
 
+ 
 def build_ui(respond_fn) -> gr.Blocks:
-    with gr.Blocks(title="Chatbot") as demo:
-        uuid_state = gr.State(lambda: str(uuid4()))
-        with gr.Row():
-            with gr.Column(scale=1, min_width=220):
-                gr.Markdown("History")
-                new_chat_btn = gr.Button("+ New chat", variant="primary", size="sm")
-                history_list = gr.Radio(
-                    choices=get_sidebar_choices(),
-                    value=None,
-                    show_label=False
-                )
-                delete_btn = gr.Button("Delete selected", variant="stop", size="sm")
+    with gr.Blocks(title="Local Qwen Chatbot") as demo:
 
+        uuid_state = gr.State(lambda: str(uuid4()))
+
+        with gr.Row():
+
+            # ── Sidebar ───────────────────────────────────────────────────────
+            with gr.Column(scale=1, min_width=220):
+                gr.Markdown("### 💬 History")
+
+                new_chat_btn = gr.Button("＋ New Chat", variant="primary", size="sm")
+
+                history_list = gr.Radio(
+                    choices=get_sidebar_choices(),  # pre-loaded from disk on startup
+                    value=None,
+                    show_label=False,
+                )
+
+                delete_btn = gr.Button("🗑 Delete selected", variant="stop", size="sm")
+
+            # ── Chat area ─────────────────────────────────────────────────────
             with gr.Column(scale=4):
+                gr.Markdown("# 🤖 Local Qwen Chatbot\n*Powered by Qwen2.5-0.5B-Instruct*")
+
+                # 1 · Avatars
                 chatbot = gr.Chatbot(
                     label="Qwen",
                     avatar_images=(USER_AVATAR, BOT_AVATAR),
                     editable="user",
-                    height=500
+                    height=500,
                 )
 
+                # Send button + file upload + microphone
                 textbox = gr.MultimodalTextbox(
-                    placeholder="Type a message, attatch a file or record your voice...",
+                    placeholder="Type a message, attach a file, or record your voice…",
                     show_label=False,
                     file_count="multiple",
                     file_types=["image", "audio", "video", ".pdf", ".txt", ".csv"],
-                    sources = ["upload", "microphone"], 
-                    submit_btn=">"
+                    sources=["upload", "microphone"],
+                    submit_btn="➤",
                 )
 
                 chat_iface = gr.ChatInterface(
@@ -53,6 +66,7 @@ def build_ui(respond_fn) -> gr.Blocks:
                     show_progress="hidden",
                 )
 
+        # ── Sidebar events ────────────────────────────────────────────────────
         history_list.change(
             load_conversation,
             inputs=[history_list],

@@ -38,3 +38,47 @@ def build_ui(respond_fn) -> gr.Blocks:
                     sources = ["upload", "microphone"], 
                     submit_btn=">"
                 )
+
+                chat_iface = gr.ChatInterface(
+                    fn=respond_fn,
+                    chatbot=chatbot,
+                    textbox=textbox,
+                    multimodal=True,
+                    additional_inputs=[uuid_state],
+                    examples=[
+                        [{"text": "Hello!", "files": []}, None],
+                        [{"text": "What is Python?", "files": []}, None],
+                        [{"text": "Tell me a joke", "files": []}, None],
+                    ],
+                    show_progress="hidden",
+                )
+
+        history_list.change(
+            load_conversation,
+            inputs=[history_list],
+            outputs=[chatbot, uuid_state],
+        )
+
+        new_chat_btn.click(
+            lambda: ([], str(uuid4()), gr.update(value=None)),
+            outputs=[chatbot, uuid_state, history_list],
+        )
+
+        delete_btn.click(
+            delete_selected,
+            inputs=[history_list],
+            outputs=[chatbot, uuid_state, history_list],
+        )
+
+        chat_iface.chatbot.change(
+            refresh_sidebar,
+            outputs=[history_list],
+        )
+        
+        chatbot.undo(handle_undo, [chatbot], [chatbot, textbox])
+        chatbot.retry(handle_retry(respond_fn), [chatbot], [chatbot])
+        chatbot.like(handle_like, None, None)
+        chatbot.edit(handle_edit, None, None)
+        chatbot.clear(handle_clear, None, [uuid_state, history_list])
+
+    return demo

@@ -73,7 +73,7 @@ def handle_undo(history, undo_data: gr.UndoData):
     print(f"[Undo] index={undo_data.index}")
     return history[:undo_data.index], undo_data.value
 
-def refresh_sideber():
+def refresh_sidebar():
     return gr.update(choices=get_sidebar_choices())
 
 # ── Sidebar handlers ──────────────────────────────────────────────────────────

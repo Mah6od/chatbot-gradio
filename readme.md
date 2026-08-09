@@ -62,7 +62,7 @@ CHATBOT/
 ### Installation
 
 ```bash
-git clone <your-repo-url>
+git clone (https://github.com/Mah6od/chatbot-gradio.git)
 cd CHATBOT
 pip install -r requirements.txt
 ```
@@ -87,7 +87,3 @@ Then open the local URL shown in your terminal (Gradio will print something like
 
 - [Gradio](https://www.gradio.app/) — for the web-based chat interface
 - [Qwen2.5-0.5B-Instruct](https://huggingface.co/Qwen) — the underlying language model
-
-## 📄 License
-
-Add your license here (e.g. MIT).

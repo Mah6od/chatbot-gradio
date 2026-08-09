@@ -62,7 +62,7 @@ CHATBOT/
 ### Installation
 
 ```bash
-git clone (https://github.com/Mah6od/chatbot-gradio.git)
+git clone https://github.com/Mah6od/chatbot-gradio.git
 cd CHATBOT
 pip install -r requirements.txt
 ```
